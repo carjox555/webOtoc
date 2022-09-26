@@ -1,6 +1,9 @@
 package com.Supabase.controler;
 
 import com.Supabase.Entity.Usuario;
+import com.Supabase.Services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,19 +15,39 @@ import java.util.List;
 @RestController            //Trabajar con Json
 public class UserControler {
 
+    @Autowired
+    private UserService usuarioService;
+
     @GetMapping("/usuarios")
     //Responde con un Json
     public ResponseEntity<List<Usuario>>getUsuario(){
-    return null;
+    return new ResponseEntity<List<Usuario>>(
+            usuarioService.getUsuarios(),
+            HttpStatus.OK
+    );
     }
 
     @GetMapping("/usuario/{id}")
-    public ResponseEntity<Usuario>getUsuario(@PathVariable String id){
-        return null;
+    public ResponseEntity<Object>getUsuario(@PathVariable String id){
+
+        try {
+            Usuario  usuario = usuarioService.getUsuario(id);
+            return new ResponseEntity<>(usuario,HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping("/usuario")
-    public ResponseEntity<Usuario>getUsuarios(@RequestParam String id){
-        return null;
+    public ResponseEntity<Object>getUsuarios(@RequestParam String id){
+        try {
+            Usuario  usuario = usuarioService.getUsuario(id);
+            return new ResponseEntity<>(usuario,HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
